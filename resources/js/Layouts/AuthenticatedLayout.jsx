@@ -30,6 +30,12 @@ export default function AuthenticatedLayout({ header, children }) {
                                 >
                                     Dashboard
                                 </NavLink>
+                                <NavLink
+                                    href={route('storage-tanks.index')}
+                                    active={route().current('storage-tanks.index')}
+                                >
+                                    Storage Tanks
+                                </NavLink>
                             </div>
                         </div>
 
@@ -133,6 +139,12 @@ export default function AuthenticatedLayout({ header, children }) {
                             active={route().current('dashboard')}
                         >
                             Dashboard
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink
+                            href={route('storage-tanks.index')}
+                            active={route().current('storage-tanks.index')}
+                        >
+                            Storage Tanks
                         </ResponsiveNavLink>
                     </div>
 
