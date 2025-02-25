@@ -36,6 +36,12 @@ export default function AuthenticatedLayout({ header, children }) {
                                 >
                                     Storage Tanks
                                 </NavLink>
+                                <NavLink
+                                    href={route('storage-tanks.index')}
+                                    active={false}
+                                >
+                                    Sensors
+                                </NavLink>
                             </div>
                         </div>
 
@@ -145,6 +151,12 @@ export default function AuthenticatedLayout({ header, children }) {
                             active={route().current('storage-tanks.index')}
                         >
                             Storage Tanks
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink
+                            href={route('storage-tanks.index')}
+                            active={false}
+                        >
+                            Sensors
                         </ResponsiveNavLink>
                     </div>
 

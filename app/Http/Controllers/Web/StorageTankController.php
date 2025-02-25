@@ -65,9 +65,15 @@ class StorageTankController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(StorageTank $storageTank)
     {
-        //
+        if(Auth::id() != $storageTank->user_id){
+            abort(403);
+        }
+
+        return Inertia::render('StorageTank/Show', [
+            'storageTank' => $storageTank->load('sensors')
+        ]);
     }
 
     /**

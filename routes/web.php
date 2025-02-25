@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Web\SensorController;
 use App\Http\Controllers\Web\StorageTankController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -27,6 +28,10 @@ Route::middleware('auth')
 });
 
 Route::resource('storage-tanks', StorageTankController::class)
-    ->only(['index', 'create', 'store', 'edit', 'update', 'destroy', 'show']);
+    ->middleware(['auth', 'verified']);
+
+Route::resource('sensors', SensorController::class)
+    ->only(['create', 'store'])
+    ->middleware(['auth', 'verified']);
 
 require __DIR__.'/auth.php';
