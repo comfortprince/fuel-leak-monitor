@@ -14,4 +14,16 @@ class Alert extends Model
         'triggered_at',
         'status'
     ];
+
+    public function customAlert() {
+        return $this->belongsTo(CustomAlert::class);
+    }
+
+    public function mq2Reading() {
+        return $this->belongsTo(SensorReading::class, 'mq2_reading_id');
+    }
+
+    public function bmp180Reading() {
+        return $this->belongsTo(SensorReading::class, 'bmp180_reading_id');
+    }
 }

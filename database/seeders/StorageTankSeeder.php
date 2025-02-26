@@ -18,7 +18,7 @@ class StorageTankSeeder extends Seeder
     {
         $user = User::factory()->create();
 
-        StorageTank::factory(10)->create([
+        StorageTank::factory(3)->create([
             'user_id' => $user->id
         ]);
     }

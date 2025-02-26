@@ -73,6 +73,13 @@ export default function Index({
                           <TableCell align="right">{storageTank.fuel_type}</TableCell>
                           <TableCell align="right">{storageTank.location}</TableCell>
                           <TableCell align="right">
+                            <Link href={route('storage-tanks.analytics', storageTank.id)}>
+                              <PrimaryButton>
+                                Analytics
+                              </PrimaryButton>
+                            </Link>
+                          </TableCell>
+                          <TableCell align="right">
                             <div className='inline-flex gap-x-2'>
                               <Link href={route('storage-tanks.edit', storageTank.id)}>
                                 <SecondaryButton>

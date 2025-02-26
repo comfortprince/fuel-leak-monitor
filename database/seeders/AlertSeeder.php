@@ -2,36 +2,73 @@
 
 namespace Database\Seeders;
 
-use App\Models\CustomAlert;
+use App\Models\Alert;
+use App\Models\SensorReading;
 use App\Models\StorageTank;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class AlertSeeder extends Seeder
 {
+    use WithoutModelEvents;
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        $storageTanks = StorageTank::with('sensors.sensorReadings')->get();
+        $this->call(SensorSeeder::class);
+        $this->call(CustomAlertSeeder::class);
+
+        $storageTanks = StorageTank::with(['sensors', 'customAlerts'])->get();
 
         foreach ($storageTanks as $tank) {
-            $groupedReadings = collect();
-
-            // Group readings by timestamp
-            foreach ($tank->sensors as $sensor) {
-                foreach ($sensor->sensorReadings as $reading) {
-                    $groupedReadings[$reading->recorded_at][] = $reading;
+            $sensors = $tank->sensors;
+            
+            for ($i=0; $i < 5; $i++) { 
+                $timestamp = now()->addMinutes(10*$i);
+                $mq2SensorReading = null;
+                $bmp180SensorReading = null;
+                foreach ($sensors as $sensor) {
+                    if($sensor->sensor_type === 'mq2'){
+                        $mq2SensorReading = SensorReading::create([
+                            'sensor_id' => $sensor->id,
+                            'value' => fake()->numberBetween(200, 10000),
+                            'timestamp' => $timestamp
+                        ]);
+                    }
+                    
+                    if($sensor->sensor_type === 'bmp180'){
+                        $bmp180SensorReading = SensorReading::create([
+                            'sensor_id' => $sensor->id,
+                            'value' => fake()->numberBetween(30000, 110000),
+                            'timestamp' => $timestamp
+                        ]);
+                    }
                 }
-            }
 
-            // Now $groupedReadings is a collection grouped by timestamp
-            foreach ($groupedReadings as $timestamp => $readings) {
-                foreach ($readings as $reading) {
-                    echo "Sensor ID: {$reading->sensor_id}, Value: {$reading->value}\n";
+                $customAlerts = $tank->customAlerts;
+                foreach ($customAlerts as $customAlert) {
+                    $this->checkAlert($customAlert, $mq2SensorReading, $bmp180SensorReading);
                 }
+                
             }
         }
+    }
+
+    private function checkAlert($customAlert, $mq2SensorReading, $bmp180SensorReading) {
+        if($this->isReadingWithinRange($mq2SensorReading->value, $customAlert->mq2_min, $customAlert->mq2_max)
+            && $this->isReadingWithinRange($bmp180SensorReading->value, $customAlert->bmp180_min, $customAlert->bmp180_max)){
+            Alert::create([
+                'custom_alert_id' => $customAlert->id,
+                'mq2_reading_id' => $mq2SensorReading->id,
+                'bmp180_reading_id' => $bmp180SensorReading->id,
+                'triggered_at' => $mq2SensorReading->timestamp,
+                'status' => 'unresolved'
+            ]);
+        }
+    }
+
+    private function isReadingWithinRange($value, $min, $max) {
+        return $value > $min && $value < $max;
     }
 }

@@ -16,6 +16,10 @@ return new class extends Migration
             $table->foreignId('custom_alert_id')->constrained()->onDelete('cascade');
             $table->timestamp('triggered_at')->useCurrent();
             $table->enum('status', ['unresolved', 'resolved'])->default('unresolved');
+            $table->unsignedBigInteger('mq2_reading_id');
+            $table->unsignedBigInteger('bmp180_reading_id');
+            $table->foreign('mq2_reading_id')->references('id')->on('sensor_readings');
+            $table->foreign('bmp180_reading_id')->references('id')->on('sensor_readings');
             $table->timestamps();
         });
     }

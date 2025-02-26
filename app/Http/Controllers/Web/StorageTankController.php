@@ -23,6 +23,18 @@ class StorageTankController extends Controller
         ]);
     }
 
+    public function analytics(StorageTank $storageTank) {
+        if(Auth::id() != $storageTank->user_id){
+            abort(403);
+        }
+
+        $storageTank->load('sensors.sensorReadings');
+
+        return Inertia::render('StorageTank/Analytics', [
+            'storageTank' => $storageTank
+        ]);
+    } 
+
     /**
      * Show the form for creating a new resource.
      */
@@ -72,7 +84,7 @@ class StorageTankController extends Controller
         }
 
         return Inertia::render('StorageTank/Show', [
-            'storageTank' => $storageTank->load('sensors')
+            'storageTank' => $storageTank->load(['sensors', 'customAlerts'])
         ]);
     }
 
