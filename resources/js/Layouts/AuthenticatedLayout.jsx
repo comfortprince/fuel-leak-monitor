@@ -5,8 +5,10 @@ import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
 import { Link, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 
-export default function AuthenticatedLayout({ header, children }) {
+export default function AuthenticatedLayout({ header, children, alerts }) {
     const user = usePage().props.auth.user;
+    const unresolvedAlertsCount = usePage().props.unresolved_alerts.count;
+    console.log(unresolvedAlertsCount);
 
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
         useState(false);
@@ -25,22 +27,21 @@ export default function AuthenticatedLayout({ header, children }) {
 
                             <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                                 <NavLink
-                                    href={route('dashboard')}
-                                    active={route().current('dashboard')}
-                                >
-                                    Dashboard
-                                </NavLink>
-                                <NavLink
                                     href={route('storage-tanks.index')}
                                     active={route().current('storage-tanks.index')}
                                 >
                                     Storage Tanks
                                 </NavLink>
                                 <NavLink
-                                    href={route('storage-tanks.index')}
-                                    active={false}
+                                    href={route('alerts.index')}
+                                    active={route().current('alerts.index')}
                                 >
-                                    Sensors
+                                    Alerts
+                                    {unresolvedAlertsCount > 0 && (
+                                        <span className="ml-1 bg-red-500 text-black text-xs font-bold px-2 py-0.5 rounded-full">
+                                            {unresolvedAlertsCount}
+                                        </span>
+                                    )}
                                 </NavLink>
                             </div>
                         </div>
@@ -141,22 +142,21 @@ export default function AuthenticatedLayout({ header, children }) {
                 >
                     <div className="space-y-1 pb-3 pt-2">
                         <ResponsiveNavLink
-                            href={route('dashboard')}
-                            active={route().current('dashboard')}
-                        >
-                            Dashboard
-                        </ResponsiveNavLink>
-                        <ResponsiveNavLink
                             href={route('storage-tanks.index')}
                             active={route().current('storage-tanks.index')}
                         >
                             Storage Tanks
                         </ResponsiveNavLink>
                         <ResponsiveNavLink
-                            href={route('storage-tanks.index')}
-                            active={false}
+                            href={route('alerts.index')}
+                            active={route().current('alerts.index')}
                         >
-                            Sensors
+                            Alerts
+                            {unresolvedAlertsCount > 0 && (
+                                <span className="ml-1 bg-red-500 text-black text-xs font-bold px-2 py-0.5 rounded-full">
+                                    {unresolvedAlertsCount}
+                                </span>
+                            )}
                         </ResponsiveNavLink>
                     </div>
 

@@ -13,4 +13,8 @@ class SensorReading extends Model
         'value',
         'timestamp'
     ];
+
+    public function sensor() {
+        return $this->belongsTo(Sensor::class);
+    }
 }

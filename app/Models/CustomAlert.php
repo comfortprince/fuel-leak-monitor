@@ -19,4 +19,8 @@ class CustomAlert extends Model
         'description',
         'action_required',
     ];
+
+    public function storageTank() {
+        return $this->belongsTo(StorageTank::class);
+    }
 }

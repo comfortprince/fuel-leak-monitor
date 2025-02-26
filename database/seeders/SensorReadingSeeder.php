@@ -21,11 +21,13 @@ class SensorReadingSeeder extends Seeder
         $storageTanks = StorageTank::with('sensors')->get();
 
         $sensorReadings = [];
-
         foreach ($storageTanks as $tank) {
             $sensors = $tank->sensors;
-            $timestamp = now();
-            for ($i=0; $i < 1000; $i++) {  
+            $timestamp = now()->subDays(10);
+
+            for ($i=0; $i < 2000; $i++) { 
+                // $timestamp = now()->addMinutes(10*$i);
+                $timestamp = $timestamp->addMinutes(10*$i);
                 foreach ($sensors as $sensor) {
                     if($sensor->sensor_type === 'mq2'){
                         $sensorReadings[] = [
@@ -43,7 +45,6 @@ class SensorReadingSeeder extends Seeder
                         ];
                     }
                 }
-                $timestamp->addMinutes(10);
             }
         }
 

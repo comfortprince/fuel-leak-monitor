@@ -14,6 +14,10 @@ class Sensor extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function storageTank(): BelongsTo  {
+        return $this->belongsTo(StorageTank::class);
+    }
+
     public function sensorReadings()  {
         return $this->hasMany(SensorReading::class);
     }
