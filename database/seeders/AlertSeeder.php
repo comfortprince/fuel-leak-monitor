@@ -23,9 +23,11 @@ class AlertSeeder extends Seeder
 
         foreach ($storageTanks as $tank) {
             $sensors = $tank->sensors;
+            $timestamp = now()->subDays(10);
             
-            for ($i=0; $i < 5; $i++) { 
-                $timestamp = now()->addMinutes(10*$i);
+            for ($i=0; $i < 2000; $i++) { 
+                // $timestamp = now()->addMinutes(10*$i);
+                $timestamp = $timestamp->addMinutes(10);
                 $mq2SensorReading = null;
                 $bmp180SensorReading = null;
                 foreach ($sensors as $sensor) {

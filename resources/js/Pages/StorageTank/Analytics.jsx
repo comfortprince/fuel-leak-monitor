@@ -1,23 +1,15 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link, useForm, usePage } from '@inertiajs/react';
 
-import PrimaryButton from '@/Components/PrimaryButton';
-import SecondaryButton from '@/Components/SecondaryButton';
-import DangerButton from '@/Components/DangerButton';
-import StatusBadge from '@/Components/StatusBadge';
-
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
+import LineChart from './LineChart';
 
 export default function Analytics({
     storageTank
 }) {
     console.log(storageTank)
+
+    const mq2Readings = storageTank.sensors.find(sensor => sensor.sensor_type === 'mq2').sensor_readings
+    const bmp180Readings = storageTank.sensors.find(sensor => sensor.sensor_type === 'bmp180').sensor_readings
 
     return (
         <AuthenticatedLayout
@@ -74,7 +66,15 @@ export default function Analytics({
                                     </h3>
                                 </div>
                                 <div>
-                                    Chart
+                                    <LineChart 
+                                        label={''} 
+                                        data={bmp180Readings.map(bmp180Reading => {
+                                            return {
+                                                timestamp: bmp180Reading.timestamp,
+                                                y_data: bmp180Reading.value
+                                            }
+                                        })}
+                                    />
                                 </div>
                             </section>
                             <section>
@@ -84,7 +84,15 @@ export default function Analytics({
                                     </h3>
                                 </div>
                                 <div>
-                                    Chart
+                                    <LineChart 
+                                        label={''}
+                                        data={bmp180Readings.map(bmp180Reading => {
+                                            return {
+                                                timestamp: bmp180Reading.timestamp,
+                                                y_data: bmp180Reading.value
+                                            }
+                                        })}
+                                    />
                                 </div>
                             </section>
                         </div>

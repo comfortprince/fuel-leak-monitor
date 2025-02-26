@@ -47,7 +47,8 @@ export default function Index({
                             <Table sx={{ minWidth: 650 }} aria-label="simple table">
                               <TableHead>
                                 <TableRow>
-                                  <TableCell>Description</TableCell>
+                                  <TableCell>Tank</TableCell>
+                                  <TableCell align="right">Description</TableCell>
                                   <TableCell align="right">Level</TableCell>
                                   <TableCell align="right">Action Required</TableCell>
                                   <TableCell align="right">Status</TableCell>
@@ -63,6 +64,11 @@ export default function Index({
                                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                   >
                                     <TableCell component="th" scope="row">
+                                      <span className="whitespace-nowrap">
+                                        {alert.custom_alert.storage_tank.identifier}
+                                      </span>
+                                    </TableCell>
+                                    <TableCell align="right">
                                       {alert.custom_alert.description}
                                     </TableCell>
                                     <TableCell align="right">{ <StatusBadge status={alert.custom_alert.level} />}</TableCell>

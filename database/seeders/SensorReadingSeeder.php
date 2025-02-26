@@ -23,9 +23,11 @@ class SensorReadingSeeder extends Seeder
         $sensorReadings = [];
         foreach ($storageTanks as $tank) {
             $sensors = $tank->sensors;
-            
-            for ($i=0; $i < 50; $i++) { 
-                $timestamp = now()->addMinutes(10*$i);
+            $timestamp = now()->subDays(10);
+
+            for ($i=0; $i < 2000; $i++) { 
+                // $timestamp = now()->addMinutes(10*$i);
+                $timestamp = $timestamp->addMinutes(10*$i);
                 foreach ($sensors as $sensor) {
                     if($sensor->sensor_type === 'mq2'){
                         $sensorReadings[] = [

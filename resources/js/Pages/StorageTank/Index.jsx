@@ -56,6 +56,7 @@ export default function Index({
                         <TableCell>Identifier</TableCell>
                         <TableCell align="right">Fuel Type</TableCell>
                         <TableCell align="right">Location</TableCell>
+                        <TableCell align="right">Analytics</TableCell>
                         <TableCell align="right">Actions</TableCell>
                       </TableRow>
                   </TableHead>

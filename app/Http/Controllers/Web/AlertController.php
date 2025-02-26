@@ -15,7 +15,7 @@ class AlertController extends Controller
     public function index()
     {
         return Inertia::render('Alert/Index', [
-            'alerts' => Alert::with(['customAlert', 'mq2Reading', 'bmp180Reading'])->get()
+            'alerts' => Alert::with(['customAlert.storageTank', 'mq2Reading', 'bmp180Reading'])->get()
         ]);
     }
 
