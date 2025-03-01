@@ -10,6 +10,12 @@ class Sensor extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'storage_tank_id',
+        'sensor_type',
+        'identifier'
+    ];
+
     public function user(): BelongsTo  {
         return $this->belongsTo(User::class);
     }

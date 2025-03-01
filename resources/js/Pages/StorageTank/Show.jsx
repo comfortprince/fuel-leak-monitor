@@ -91,9 +91,9 @@ export default function Show({
                                         Sensors
                                     </h3>
                                     <Link
-                                        href={storageTank.sensors.length > 1 ? '#!' : route('sensors.create')}
+                                        href={storageTank.sensors.length > 1 ? '#!' : route('sensors.create', storageTank.id)}
                                     >
-                                        <PrimaryButton disabled>
+                                        <PrimaryButton>
                                             New
                                         </PrimaryButton>
                                     </Link>
@@ -126,7 +126,7 @@ export default function Show({
                                             </TableCell>
                                             <TableCell align="left">
                                                 <div className='inline-flex gap-x-2'>
-                                                    <Link href={route('storage-tanks.show', sensor.id)}>
+                                                    <Link href={route('storage-tanks.analytics', storageTank.id)}>
                                                         <PrimaryButton>
                                                             Readings
                                                         </PrimaryButton>
@@ -134,7 +134,7 @@ export default function Show({
                                                     <form 
                                                         onSubmit={(e) => {
                                                         e.preventDefault();
-                                                        destroy(route('storage-tanks.destroy', sensor.id))
+                                                        destroy(route('sensors.destroy', sensor.id))
                                                         }}
                                                     >
                                                         <DangerButton>
@@ -155,7 +155,7 @@ export default function Show({
                                         Custom Alerts
                                     </h3>
                                     <Link
-                                        href={route('custom-alerts.create')}
+                                        href={route('custom-alerts.create', storageTank.id)}
                                     >
                                         <PrimaryButton>
                                             New

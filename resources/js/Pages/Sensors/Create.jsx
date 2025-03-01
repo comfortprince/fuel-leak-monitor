@@ -58,49 +58,37 @@ export default function Index({
                   </div>
 
                   <div className="mt-4">
-                      <InputLabel htmlFor="fuel_type" value="Fuel Type" />
+                      <InputLabel htmlFor="sensor_type" value="Sensor Type" />
   
                       <Select
-                        id="fuel_type"
-                        value={data.fuel_type}
-                        label="Fuel Type"
-                        onChange={(e) => setData('fuel_type', e.target.value)}
+                        id="sensor_type"
+                        value={data.sensor_type}
+                        label="sensor Type"
+                        onChange={(e) => setData('sensor_type', e.target.value)}
                         sx={{ width: '100%' }}
                       >
-                        {fuelTypes.map((fuelType) => (
+                        {sensorTypes.map((sensorType) => (
                           <MenuItem
-                            key={fuelType}
-                            value={fuelType}
+                            key={sensorType}
+                            value={sensorType}
                           >
-                            {fuelType}
+                            {sensorType}
                           </MenuItem>
                         ))}
                       </Select>
   
-                      <InputError message={errors.fuel_type} className="mt-2" />
-                  </div>
-
-                  <div className="mt-4">
-                      <InputLabel htmlFor="location" value="Location" />
-  
-                      <TextInput
-                          id="location"
-                          type="text"
-                          name="location"
-                          value={data.location}
-                          className="mt-1 block w-full"
-                          onChange={(e) => setData('location', e.target.value)}
-                      />
-  
-                      <InputError message={errors.location} className="mt-2" />
+                      <InputError message={errors.sensor_type} className="mt-2" />
                   </div>
   
                   <div className="mt-4 flex items-center justify-between">  
-                      <Link href={route('storage-tanks.index')}>
-                        <SecondaryButton type='button'>
-                          Cancel
-                        </SecondaryButton>
-                      </Link>
+                      <SecondaryButton 
+                        type='button'
+                        onClick={() => {
+                          history.back();
+                        }}
+                      >
+                        Cancel
+                      </SecondaryButton>
                       
                       <PrimaryButton className="ms-4" disabled={processing}>
                           Create

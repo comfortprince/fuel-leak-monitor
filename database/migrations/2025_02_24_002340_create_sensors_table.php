@@ -16,7 +16,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('storage_tank_id')->constrained()->onDelete('cascade');
             $table->enum('sensor_type', SystemHelper::getSensorTypes());
-            $table->string('identifier');
+            $table->string('identifier')->unique();
             $table->dateTime('last_seen')->nullable();
             $table->timestamps();
         });

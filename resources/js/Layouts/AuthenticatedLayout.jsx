@@ -5,10 +5,9 @@ import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
 import { Link, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 
-export default function AuthenticatedLayout({ header, children, alerts }) {
+export default function AuthenticatedLayout({ header, children }) {
     const user = usePage().props.auth.user;
     const unresolvedAlertsCount = usePage().props.unresolved_alerts.count;
-    console.log(unresolvedAlertsCount);
 
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
         useState(false);

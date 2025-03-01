@@ -6,10 +6,11 @@ import LineChart from './LineChart';
 export default function Analytics({
     storageTank
 }) {
-    console.log(storageTank)
+    const mq2Sensor = storageTank.sensors.find(sensor => sensor.sensor_type === 'mq2')
+    const mq2Readings = mq2Sensor ? mq2Sensor.sensor_readings : null
 
-    const mq2Readings = storageTank.sensors.find(sensor => sensor.sensor_type === 'mq2').sensor_readings
-    const bmp180Readings = storageTank.sensors.find(sensor => sensor.sensor_type === 'bmp180').sensor_readings
+    const bmp180Sensor = storageTank.sensors.find(sensor => sensor.sensor_type === 'bmp180')
+    const bmp180Readings = bmp180Sensor ? bmp180Sensor.sensor_readings : null
 
     return (
         <AuthenticatedLayout
@@ -66,6 +67,7 @@ export default function Analytics({
                                     </h3>
                                 </div>
                                 <div>
+                                    {bmp180Readings ?
                                     <LineChart 
                                         label={''} 
                                         data={bmp180Readings.map(bmp180Reading => {
@@ -74,7 +76,10 @@ export default function Analytics({
                                                 y_data: bmp180Reading.value
                                             }
                                         })}
-                                    />
+                                    /> : 
+                                    <div className='mt-10 italic'>
+                                        'Nothing to show here. Install a sensor.'
+                                    </div>}
                                 </div>
                             </section>
                             <section>
@@ -84,15 +89,19 @@ export default function Analytics({
                                     </h3>
                                 </div>
                                 <div>
+                                    {mq2Readings ?
                                     <LineChart 
                                         label={''}
-                                        data={bmp180Readings.map(bmp180Reading => {
+                                        data={mq2Readings.map(mq2Reading => {
                                             return {
-                                                timestamp: bmp180Reading.timestamp,
-                                                y_data: bmp180Reading.value
+                                                timestamp: mq2Reading.timestamp,
+                                                y_data: mq2Reading.value
                                             }
                                         })}
-                                    />
+                                    /> : 
+                                    <div className='mt-10 italic'>
+                                        'Nothing to show here. Install a sensor.'
+                                    </div>}
                                 </div>
                             </section>
                         </div>
