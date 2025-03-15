@@ -3,12 +3,25 @@ import Dropdown from '@/Components/Dropdown';
 import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
 import { Link, usePage } from '@inertiajs/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
-export default function AuthenticatedLayout({ header, children, alerts }) {
+export default function AuthenticatedLayout({ header, children }) {
     const user = usePage().props.auth.user;
-    const unresolvedAlertsCount = usePage().props.unresolved_alerts.count;
-    console.log(unresolvedAlertsCount);
+
+    const [unresolvedAlertsCount, setUnresolvedAlertsCount] = useState(usePage().props.unresolved_alerts.count);
+
+    useEffect(()=>{
+        const channel = Echo.private(`unresolvedFuelAlertCount`);
+        
+        channel.listen('FuelLeakAlertCount', (e) => {
+            console.log(e.unresolvedAlertsCount);
+            setUnresolvedAlertsCount(e.unresolvedAlertsCount)
+        });
+
+        return () => {
+            Echo.private(`unresolvedFuelAlertCount`).stopListening('FuelLeakAlertCount')
+        }
+    },[])
 
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
         useState(false);

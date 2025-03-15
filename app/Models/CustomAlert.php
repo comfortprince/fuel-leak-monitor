@@ -23,4 +23,8 @@ class CustomAlert extends Model
     public function storageTank() {
         return $this->belongsTo(StorageTank::class);
     }
+
+    public function alerts() {
+        return $this->hasMany(Alert::class);
+    }
 }

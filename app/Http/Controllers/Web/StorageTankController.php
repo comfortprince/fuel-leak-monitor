@@ -30,6 +30,12 @@ class StorageTankController extends Controller
 
         $storageTank->load('sensors.sensorReadings');
 
+        if ($storageTank->sensors->count() === 0) {
+            return redirect()->back()->with([
+                'message' => 'No readings. Register some sensors on ' . $storageTank->identifier
+            ]);
+        }
+
         return Inertia::render('StorageTank/Analytics', [
             'storageTank' => $storageTank
         ]);

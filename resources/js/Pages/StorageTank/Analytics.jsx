@@ -2,20 +2,37 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link, useForm, usePage } from '@inertiajs/react';
 
 import LineChart from './LineChart';
+import { useEffect, useState } from 'react';
 
 export default function Analytics({
     storageTank
 }) {
-    console.log(storageTank)
+    const [_storageTank, set_StorageTank] = useState(storageTank);
 
-    const mq2Readings = storageTank.sensors.find(sensor => sensor.sensor_type === 'mq2').sensor_readings
-    const bmp180Readings = storageTank.sensors.find(sensor => sensor.sensor_type === 'bmp180').sensor_readings
+    useEffect(() => {
+        const channel = Echo.private('newSensorReadingStored');
+      
+        channel.listen('SensorReadingStored', (e) => {
+            console.log(e.storageTank);
+            set_StorageTank(e.storageTank);
+        });
+
+        return () => {
+            Echo.private(`newSensorReadingStored`).stopListening('SensorReadingStored')
+        }
+    }, []);
+
+    const mq2Sensor = _storageTank.sensors.find(sensor => sensor.sensor_type === 'mq2')
+    const mq2Readings = mq2Sensor ? mq2Sensor.sensor_readings : null
+
+    const bmp180Sensor = _storageTank.sensors.find(sensor => sensor.sensor_type === 'bmp180')
+    const bmp180Readings = bmp180Sensor ? bmp180Sensor.sensor_readings : null
 
     return (
         <AuthenticatedLayout
             header={
                 <h2 className="text-xl font-semibold leading-tight text-gray-800">
-                    {`${storageTank.identifier} analytics`}
+                    {`${_storageTank.identifier} analytics`}
                 </h2>
             }
         >
@@ -38,7 +55,7 @@ export default function Analytics({
                                             Identifier
                                         </div>
                                         <div className='text-sm font-semibold'>
-                                            {storageTank.identifier}
+                                            {_storageTank.identifier}
                                         </div>
                                     </div>
                                     <div className='flex max-md:justify-between'>
@@ -46,7 +63,7 @@ export default function Analytics({
                                             Fuel Type
                                         </div>
                                         <div className='text-sm font-semibold'>
-                                            {storageTank.fuel_type}
+                                            {_storageTank.fuel_type}
                                         </div>
                                     </div>
                                     <div className='flex max-md:justify-between'>
@@ -54,7 +71,7 @@ export default function Analytics({
                                             Location
                                         </div>
                                         <div className='text-sm font-semibold'>
-                                            {storageTank.location}
+                                            {_storageTank.location}
                                         </div>
                                     </div>
                                 </div>
@@ -66,6 +83,7 @@ export default function Analytics({
                                     </h3>
                                 </div>
                                 <div>
+                                    {bmp180Readings ?
                                     <LineChart 
                                         label={''} 
                                         data={bmp180Readings.map(bmp180Reading => {
@@ -74,7 +92,10 @@ export default function Analytics({
                                                 y_data: bmp180Reading.value
                                             }
                                         })}
-                                    />
+                                    /> : 
+                                    <div className='mt-10 italic'>
+                                        'Nothing to show here. Install a sensor.'
+                                    </div>}
                                 </div>
                             </section>
                             <section>
@@ -84,15 +105,19 @@ export default function Analytics({
                                     </h3>
                                 </div>
                                 <div>
+                                    {mq2Readings ?
                                     <LineChart 
                                         label={''}
-                                        data={bmp180Readings.map(bmp180Reading => {
+                                        data={mq2Readings.map(mq2Reading => {
                                             return {
-                                                timestamp: bmp180Reading.timestamp,
-                                                y_data: bmp180Reading.value
+                                                timestamp: mq2Reading.timestamp,
+                                                y_data: mq2Reading.value
                                             }
                                         })}
-                                    />
+                                    /> : 
+                                    <div className='mt-10 italic'>
+                                        'Nothing to show here. Install a sensor.'
+                                    </div>}
                                 </div>
                             </section>
                         </div>

@@ -10,6 +10,7 @@ class SensorReading extends Model
     use HasFactory;
 
     protected $fillable = [
+        'sensor_id',
         'value',
         'timestamp'
     ];

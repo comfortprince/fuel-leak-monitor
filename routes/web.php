@@ -5,21 +5,13 @@ use App\Http\Controllers\Web\AlertController;
 use App\Http\Controllers\Web\CustomAlertController;
 use App\Http\Controllers\Web\SensorController;
 use App\Http\Controllers\Web\StorageTankController;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
-Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
-});
+Route::redirect('/', '/login', 301);;
 
-Route::redirect('/dashboard', '/storage-tanks')->name('dashboard');
-
+Route::redirect('/dashboard', '/storage-tanks')
+    ->middleware(['auth', 'verified'])    
+    ->name('dashboard');
 
 Route::middleware('auth')
 ->group(function () {
@@ -37,11 +29,19 @@ Route::get('storage-tanks/{storageTank}/analytics', [StorageTankController::clas
 
 
 Route::resource('sensors', SensorController::class)
-    ->only(['create', 'store'])
+    ->only(['store', 'destroy'])
+    ->middleware(['auth', 'verified']);
+
+Route::get('sensors/create/{storageTank}', [SensorController::class, 'create'])
+    ->name('sensors.create')
     ->middleware(['auth', 'verified']);
 
 Route::resource('custom-alerts', CustomAlertController::class)
-    ->only(['create', 'store', 'edit', 'update', 'destroy'])
+    ->only(['store', 'edit', 'update', 'destroy'])
+    ->middleware(['auth', 'verified']);
+
+Route::get('custom-alerts/create/{storageTank}', [CustomAlertController::class, 'create'])
+    ->name('custom-alerts.create')
     ->middleware(['auth', 'verified']);
 
 Route::resource('alerts', AlertController::class)
@@ -51,5 +51,9 @@ Route::resource('alerts', AlertController::class)
 Route::put('alerts/{alert}', [AlertController::class, 'resolve'])
     ->name('alerts.resolve')
     ->middleware(['auth', 'verified']);
+
+Route::get('debug', function () {
+    return view('emails.fuel-leak-alert');
+});
 
 require __DIR__.'/auth.php';

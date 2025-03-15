@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Models\Alert;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Middleware;
 
 class HandleInertiaRequests extends Middleware
@@ -30,6 +31,21 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        $unresolvedAlertsCount = 0;
+
+        if (Auth::check()) {
+            $unresolvedAlertsCount = Auth::user()->storageTanks()
+                ->with(['customAlerts.alerts' => function($query) {
+                    $query->where('status', 'unresolved');
+                }])
+                ->get()
+                ->pluck('customAlerts')
+                ->flatten()
+                ->pluck('alerts')    
+                ->flatten()
+                ->count();
+        }
+
         return [
             ...parent::share($request),
             'auth' => [
@@ -39,7 +55,7 @@ class HandleInertiaRequests extends Middleware
                 'message' => fn () => $request->session()->get('message')
             ],
             'unresolved_alerts' => [
-                'count' => Alert::where('status', '=', 'unresolved')->count()
+                'count' => $unresolvedAlertsCount
             ],
         ];
     }

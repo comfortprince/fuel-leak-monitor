@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Models\Alert;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class AlertController extends Controller
@@ -14,8 +15,21 @@ class AlertController extends Controller
      */
     public function index()
     {
+        $user = Auth::user();
+        $alerts = $user->storageTanks()
+                    ->with([
+                        'customAlerts.alerts.customAlert.storageTank',
+                        'customAlerts.alerts.mq2Reading',
+                        'customAlerts.alerts.bmp180Reading'
+                    ])
+                    ->get()
+                    ->pluck('customAlerts')
+                    ->flatten()
+                    ->pluck('alerts')
+                    ->flatten();
+
         return Inertia::render('Alert/Index', [
-            'alerts' => Alert::with(['customAlert.storageTank', 'mq2Reading', 'bmp180Reading'])->get()
+            '_alerts' => $alerts
         ]);
     }
 

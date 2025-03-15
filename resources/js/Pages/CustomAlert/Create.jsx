@@ -11,10 +11,10 @@ import PrimaryButton from '@/Components/PrimaryButton';
 import SecondaryButton from '@/Components/SecondaryButton';
 
 export default function Index({
-  storageTanks
+  storageTank
 }) {
     const { data, setData, post, processing, errors, reset } = useForm({
-        storage_tank_id : '',
+        storage_tank_id : storageTank.id,
         mq2_min : '',
         mq2_max : '',
         bmp180_min : '',
@@ -45,26 +45,16 @@ export default function Index({
               <div className="p-6 text-gray-900">
                 <form onSubmit={submit}>
                   <div className="mt-4">
-                      <InputLabel htmlFor="storage_tank" value="Storage Tanks" />
+                      <InputLabel htmlFor="storage_tank" value="Storage Tank" />
   
-                      <Select
-                        id="storage_tank"
-                        value={data.storage_tank_id}
-                        label="Fuel Type"
-                        onChange={(e) => setData('storage_tank_id', e.target.value)}
-                        sx={{ width: '100%' }}
-                      >
-                        {storageTanks.map((storageTank) => (
-                          <MenuItem
-                            key={storageTank.id}
-                            value={storageTank.id}
-                          >
-                            {storageTank.identifier}
-                          </MenuItem>
-                        ))}
-                      </Select>
-  
-                      <InputError message={errors.storage_tank_id} className="mt-2" />
+                      <TextInput
+                          type="text"
+                          name="storage_tank"
+                          id="storage_tank"
+                          value={storageTank.identifier}
+                          className="mt-1 block w-full"
+                          disabled
+                      />
                   </div>
                   
                   <div>

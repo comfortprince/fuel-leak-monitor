@@ -10,6 +10,8 @@ class Alert extends Model
     use HasFactory;
 
     protected $fillable = [
+        'mq2_reading_id',
+        'bmp180_reading_id',
         'custom_alert_id',
         'triggered_at',
         'status'
