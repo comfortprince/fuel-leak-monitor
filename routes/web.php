@@ -5,26 +5,13 @@ use App\Http\Controllers\Web\AlertController;
 use App\Http\Controllers\Web\CustomAlertController;
 use App\Http\Controllers\Web\SensorController;
 use App\Http\Controllers\Web\StorageTankController;
-use App\Models\Alert;
-use App\Models\SensorReading;
-use App\Models\StorageTank;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
-Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
-});
+Route::redirect('/', '/login', 301);;
 
 Route::redirect('/dashboard', '/storage-tanks')
     ->middleware(['auth', 'verified'])    
     ->name('dashboard');
-
 
 Route::middleware('auth')
 ->group(function () {
@@ -66,13 +53,7 @@ Route::put('alerts/{alert}', [AlertController::class, 'resolve'])
     ->middleware(['auth', 'verified']);
 
 Route::get('debug', function () {
-    // Alert::truncate();
-    
-    $count = SensorReading::all()->count();
-
-    for ($i=11; $i < $count; $i++) { 
-        SensorReading::destroy($i);
-    }
+    return view('emails.fuel-leak-alert');
 });
 
 require __DIR__.'/auth.php';

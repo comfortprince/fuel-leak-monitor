@@ -2,12 +2,17 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Events\FuelLeakAlertCount;
+use App\Events\SensorReadingStored;
 use App\Http\Controllers\Controller;
+use App\Mail\FuelLeakAlert;
 use App\Models\Alert;
 use App\Models\Sensor;
 use App\Models\SensorReading;
 use App\Models\StorageTank;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rule;
 
 class SensorReadingController extends Controller
@@ -64,6 +69,10 @@ class SensorReadingController extends Controller
             }
         }
 
+        $tank = $mq2Reading->sensor->storageTank->load(['sensors.sensorReadings']);
+
+        SensorReadingStored::dispatch($tank);
+
         // send readings to client
 
         $alerts = [];
@@ -73,12 +82,35 @@ class SensorReadingController extends Controller
             $alert = $this->checkAlert($customAlert, $mq2Reading, $bmp180Reading);
             
             if($alert){
+                $alert->load(['bmp180Reading', 'mq2Reading']);
                 $alerts = [ ...$alerts, $alert ];
             }
         }
+        
+        // send alerts via email and event broadcasting
+        foreach ($alerts as $alert) {
+            $email = $alert->customAlert->storageTank->user->email;
+            Mail::to($email)->send(new FuelLeakAlert($alert));
+            \App\Events\FuelLeakAlert::dispatch($alert);
+        }
 
-        // send alerts to client
-        // send alerts via email 
+        if ($alerts) {
+            $firstAlert = $alerts[0];
+            $user = $firstAlert->customAlert->storageTank->user;
+
+            $unresolvedAlertsCount = $user->storageTanks()
+                ->with(['customAlerts.alerts' => function($query) {
+                    $query->where('status', 'unresolved');
+                }])
+                ->get()
+                ->pluck('customAlerts')
+                ->flatten()
+                ->pluck('alerts')    
+                ->flatten()
+                ->count();
+
+            FuelLeakAlertCount::dispatch($unresolvedAlertsCount);
+        }
 
         return "Successfull";
     }

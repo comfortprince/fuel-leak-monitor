@@ -29,7 +29,7 @@ class AlertController extends Controller
                     ->flatten();
 
         return Inertia::render('Alert/Index', [
-            'alerts' => $alerts
+            '_alerts' => $alerts
         ]);
     }
 

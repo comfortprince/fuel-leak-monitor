@@ -11,18 +11,34 @@ import { Paper } from '@mui/material';
 
 import PrimaryButton from '@/Components/PrimaryButton';
 import StatusBadge from '@/Components/StatusBadge';
+import { useEffect, useState } from 'react';
 
 export default function Index({
-  alerts
+  _alerts
 }) {
     const { put } = useForm({});
-    const { flash } = usePage().props
+    const { flash } = usePage().props;
+    const [alerts, setAlerts] = useState(_alerts);
+
+    useEffect(()=>{
+      console.log(alerts)
+      const channel = Echo.private(`fuelLeakAlerts`);
+      
+      channel.listen('FuelLeakAlert', (e) => {
+        console.log(e.alert);
+        setAlerts([...alerts, e.alert]);
+      });
+
+      return () => {
+        Echo.private(`fuelLeakAlerts`).stopListening('FuelLeakAlert')
+      }
+    },[])
 
     return (
         <AuthenticatedLayout
             header={
                 <h2 className="text-xl font-semibold leading-tight text-gray-800">
-                    Alerts
+                  Alerts
                 </h2>
             }
         >
